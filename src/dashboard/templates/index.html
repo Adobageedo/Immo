@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Immobilier</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Dashboard Immobilier</h1>
+    <div id="map" style="height:500px;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([48.8566, 2.3522], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        fetch('/api/opportunities')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(item => {
+                    if(item.lat && item.lon){
+                        L.marker([item.lat, item.lon])
+                            .addTo(map)
+                            .bindPopup(`Prix: ${item.price} €, Surface: ${item.surface} m²`);
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
